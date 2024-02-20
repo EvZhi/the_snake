@@ -43,18 +43,28 @@ clock = pygame.time.Clock()
 
 
 # Тут опишите все классы игры.
-...
+class GameObject:
+    pass
+
+class Snake(GameObject):
+    pass
+
+class Apple(GameObject):
+    pass
 
 
 def main():
     # Тут нужно создать экземпляры классов.
     ...
 
-    # while True:
-    #     clock.tick(SPEED)
+    while True:
+        clock.tick(SPEED)
 
         # Тут опишите основную логику игры.
-        # ...
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                raise SystemExit
 
 
 if __name__ == '__main__':
