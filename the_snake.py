@@ -44,27 +44,51 @@ clock = pygame.time.Clock()
 
 # Тут опишите все классы игры.
 class GameObject:
-    pass
+    def __init__(self, body_color):
+        self.position = ((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2))
+        self.body_color = body_color
+
+    def draw(self):
+        pass
+
 
 class Snake(GameObject):
     pass
 
+
 class Apple(GameObject):
-    pass
+    def __init__(self, body_color):
+        super().__init__(body_color)
+        self.position = self.randomize_position()
+
+    def randomize_position(self):
+        return (
+            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+            randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+        )
+
+    def draw(self, surface):
+        rect = pygame.Rect(
+            (self.position[0], self.position[1]),
+            (GRID_SIZE, GRID_SIZE)
+        )
+        pygame.draw.rect(surface, self.body_color, rect)
+        pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
 
 def main():
     # Тут нужно создать экземпляры классов.
-    ...
+    aplle = Apple(APPLE_COLOR)
+    aplle.draw(screen)
 
     while True:
         clock.tick(SPEED)
-
         # Тут опишите основную логику игры.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 raise SystemExit
+        pygame.display.update()
 
 
 if __name__ == '__main__':
