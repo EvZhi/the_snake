@@ -113,10 +113,10 @@ class Snake(GameObject):
             )
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
 
-    def get_head_position():
+    def get_head_position(self):
         """Метод возращающий позицию головы змейки"""
-        pass
-
+        return self.positions[0]
+    
     def move(self):
         """Метод описывающий логику движения змейки"""
         pass
