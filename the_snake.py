@@ -11,7 +11,8 @@ GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
-DOTE_CENTER_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+# Ценральная точка экрана
+CENTER_DOTE_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
 # Направления движения:
 UP = (0, -1)
@@ -30,6 +31,8 @@ APPLE_COLOR = (255, 0, 0)
 
 # Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
+
+DEFAULT_COLOR = (255, 255, 255)
 
 # Скорость движения змейки:
 SPEED = 10
@@ -64,9 +67,9 @@ def handle_keys(game_object):
 class GameObject:
     """Базовый класс игровых объектов."""
 
-    def __init__(self, body_color=None):
+    def __init__(self, position=CENTER_DOTE_SCREEN, body_color=DEFAULT_COLOR):
         """Инициализация базовых атрибутов игрового объекта."""
-        self.position = DOTE_CENTER_SCREEN
+        self.position = position
         self.body_color = body_color
 
     def draw(self):
@@ -79,8 +82,10 @@ class Snake(GameObject):
 
     def __init__(self, body_color=SNAKE_COLOR):
         """Инициализация атрибутов Змейки."""
-        super().__init__(body_color)
-        # Длинна змейки. По умолчанию - 1 ячейка
+        super().__init__()
+        # Цвет змейки
+        self.body_color = body_color
+        # Длинна змейки
         self.length = 1
         # Позиции ячеек тела змейки:
         self.positions = [self.position]
@@ -101,7 +106,10 @@ class Snake(GameObject):
             pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
         # Отрисовка головы змейки
-        head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
+        head_rect = pygame.Rect(
+            self.positions[0],
+            (GRID_SIZE, GRID_SIZE)
+        )
         pygame.draw.rect(surface, self.body_color, head_rect)
         pygame.draw.rect(surface, BORDER_COLOR, head_rect, 1)
 
@@ -156,6 +164,7 @@ class Apple(GameObject):
     def __init__(self, body_color=APPLE_COLOR):
         """Инициализация яблока."""
         super().__init__(body_color)
+        self.body_color = body_color
         self.position = self.randomize_position()
 
     def randomize_position(self):
@@ -177,19 +186,19 @@ class Apple(GameObject):
 
 def main():
     """Главная функция игры - точка входа"""
-    aplle = Apple()
+    apple = Apple()
     snake = Snake()
 
     while True:
         clock.tick(SPEED)
-        aplle.draw(screen)
+        apple.draw(screen)
         snake.draw(screen)
         handle_keys(snake)
         snake.update_direction()
         snake.move()
-        if aplle.position == snake.get_head_position():
+        if apple.position == snake.get_head_position():
             snake.length += 1
-            aplle.position = aplle.randomize_position()
+            apple.position = apple.randomize_position()
         pygame.display.update()
 
 
