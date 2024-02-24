@@ -101,13 +101,6 @@ class Snake(GameObject):
 
     def draw(self, surface):
         """Метод отрисовки змейки на игровом поле."""
-        for position in self.positions[:-1]:
-            rect = (
-                pygame.Rect((position[0], position[1]), (GRID_SIZE, GRID_SIZE))
-            )
-            pygame.draw.rect(surface, self.body_color, rect)
-            pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
-
         # Отрисовка головы змейки
         head_rect = pygame.Rect(
             self.positions[0],
