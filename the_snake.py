@@ -78,7 +78,7 @@ class GameObject:
         raise NotImplementedError(
             f'Определите draw в {self.__class__.__name__}.'
         )
-    
+
     def draw_cell(self, cell_position, cell_size=GRID_SIZE):
         """Метод отрисовки ячейки игрового объекта."""
         return pygame.Rect(
