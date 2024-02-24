@@ -11,14 +11,14 @@ GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
-# Ценральная точка экрана
-CENTER_DOTE_SCREEN = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-
 # Направления движения:
 UP = (0, -1)
 DOWN = (0, 1)
 LEFT = (-1, 0)
 RIGHT = (1, 0)
+
+# Ценральная точка экрана
+DEFAULT_POSITION = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
 # Цвет фона - черный:
 BOARD_BACKGROUND_COLOR = (0, 0, 0)
@@ -68,7 +68,7 @@ def handle_keys(game_object):
 class GameObject:
     """Базовый класс игровых объектов."""
 
-    def __init__(self, position=CENTER_DOTE_SCREEN, body_color=DEFAULT_COLOR):
+    def __init__(self, position=DEFAULT_POSITION, body_color=DEFAULT_COLOR):
         """Инициализация базовых атрибутов игрового объекта."""
         self.position = position
         self.body_color = body_color
@@ -77,6 +77,13 @@ class GameObject:
         """Абстрактный метод отрисовки игровых объектов."""
         raise NotImplementedError(
             f'Определите draw в {self.__class__.__name__}.'
+        )
+    
+    def draw_cell(self, cell_position, cell_size=GRID_SIZE):
+        """Метод отрисовки ячейки игрового объекта."""
+        return pygame.Rect(
+            cell_position,
+            (cell_size, cell_size)
         )
 
 
@@ -102,10 +109,7 @@ class Snake(GameObject):
     def draw(self, surface):
         """Метод отрисовки змейки на игровом поле."""
         # Отрисовка головы змейки
-        head_rect = pygame.Rect(
-            self.positions[0],
-            (GRID_SIZE, GRID_SIZE)
-        )
+        head_rect = self.draw_cell(self.positions[0])
         pygame.draw.rect(surface, self.body_color, head_rect)
         pygame.draw.rect(surface, BORDER_COLOR, head_rect, 1)
 
@@ -158,29 +162,31 @@ class Apple(GameObject):
         """Инициализация яблока."""
         super().__init__(body_color)
         self.body_color = body_color
-        self.position = self.randomize_position()
+        self.randomize_position()
 
-    def randomize_position(self):
+    def randomize_position(self, snake_pos=[DEFAULT_POSITION]):
         """Метод опредления рандомной позиции яблока"""
-        return (
-            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-        )
+        while True:
+            self.position = (
+                randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+                randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+            )
+            if self.position in snake_pos:
+                continue
+            else:
+                break
 
     def draw(self, surface):
         """Метод отрисовки яблока на игровом поле."""
-        rect = pygame.Rect(
-            (self.position[0], self.position[1]),
-            (GRID_SIZE, GRID_SIZE)
-        )
+        rect = self.draw_cell(self.position)
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
 
 def main():
     """Главная функция игры - точка входа"""
-    apple = Apple()
     snake = Snake()
+    apple = Apple()
 
     while True:
         clock.tick(SPEED)
@@ -193,7 +199,7 @@ def main():
             snake.reset()
         if apple.position == snake.get_head_position():
             snake.length += 1
-            apple.position = apple.randomize_position()
+            apple.randomize_position(snake.positions)
         pygame.display.update()
 
 
