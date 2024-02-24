@@ -79,12 +79,15 @@ class GameObject:
             f'Определите draw в {self.__class__.__name__}.'
         )
 
-    def draw_cell(self, cell_position, cell_size=GRID_SIZE):
+    def draw_cell(self, surface, cell_position, body_color,
+                  border_color=BORDER_COLOR, cell_size=GRID_SIZE):
         """Метод отрисовки ячейки игрового объекта."""
-        return pygame.Rect(
+        cell_rect = pygame.Rect(
             cell_position,
             (cell_size, cell_size)
         )
+        pygame.draw.rect(surface, body_color, cell_rect)
+        pygame.draw.rect(surface, border_color, cell_rect, 1)
 
 
 class Snake(GameObject):
@@ -109,9 +112,7 @@ class Snake(GameObject):
     def draw(self, surface):
         """Метод отрисовки змейки на игровом поле."""
         # Отрисовка головы змейки
-        head_rect = self.draw_cell(self.positions[0])
-        pygame.draw.rect(surface, self.body_color, head_rect)
-        pygame.draw.rect(surface, BORDER_COLOR, head_rect, 1)
+        self.draw_cell(surface, self.positions[0], self.body_color)
 
         # Затирание хвоста змейки
         if self.last:
@@ -178,9 +179,8 @@ class Apple(GameObject):
 
     def draw(self, surface):
         """Метод отрисовки яблока на игровом поле."""
-        rect = self.draw_cell(self.position)
-        pygame.draw.rect(surface, self.body_color, rect)
-        pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+        self.draw_cell(surface, self.position, self.body_color)
+        
 
 
 def main():
