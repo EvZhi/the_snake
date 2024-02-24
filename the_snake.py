@@ -32,6 +32,7 @@ APPLE_COLOR = (255, 0, 0)
 # Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
 
+# Цвет базового игрового класса
 DEFAULT_COLOR = (255, 255, 255)
 
 # Скорость движения змейки:
@@ -74,7 +75,9 @@ class GameObject:
 
     def draw(self):
         """Абстрактный метод отрисовки игровых объектов."""
-        pass
+        raise NotImplementedError(
+            f'Определите draw в {self.__class__.__name__}.'
+        )
 
 
 class Snake(GameObject):
