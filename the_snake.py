@@ -132,13 +132,10 @@ class Snake(GameObject):
              * GRID_SIZE)) % SCREEN_HEIGHT
         )
 
-        if new_position_head in self.positions[2:]:
-            self.reset()
-        else:
-            self.positions.insert(0, new_position_head)
-            self.last = self.positions[-1]
-            if len(self.positions) > self.length:
-                self.positions.pop()
+        self.positions.insert(0, new_position_head)
+        self.last = self.positions[-1]
+        if len(self.positions) > self.length:
+            self.positions.pop()
 
     def update_direction(self):
         """Метод обновления направления движения Змейки."""
@@ -192,6 +189,8 @@ def main():
         handle_keys(snake)
         snake.update_direction()
         snake.move()
+        if snake.get_head_position() in snake.positions[2:]:
+            snake.reset()
         if apple.position == snake.get_head_position():
             snake.length += 1
             apple.position = apple.randomize_position()
