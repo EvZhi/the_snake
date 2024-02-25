@@ -164,10 +164,11 @@ class Apple(GameObject):
 
     def randomize_position(self, snake_pos):
         """Метод опредления рандомной позиции яблока"""
-        while True:
-            # проверка есть ли свободное место для яблока
-            if len(snake_pos) == GRID_WIDTH * GRID_HEIGHT:
-                break
+        running = True
+        # Проверка свободного места для яблока
+        if len(snake_pos) == GRID_WIDTH * GRID_HEIGHT:
+            running = False
+        while running:
             position = (
                 randint(0, GRID_WIDTH - 1) * GRID_SIZE,
                 randint(0, GRID_HEIGHT - 1) * GRID_SIZE
