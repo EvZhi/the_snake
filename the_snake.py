@@ -95,9 +95,7 @@ class Snake(GameObject):
 
     def __init__(self, body_color=SNAKE_COLOR):
         """Инициализация атрибутов Змейки."""
-        super().__init__()
-        # Цвет змейки
-        self.body_color = body_color
+        super().__init__(body_color=body_color)
         # Длинна змейки
         self.length = 1
         # Позиции ячеек тела змейки:
@@ -159,34 +157,34 @@ class Snake(GameObject):
 class Apple(GameObject):
     """Класс игрового объекта - Яблоко"""
 
-    def __init__(self, body_color=APPLE_COLOR):
+    def __init__(self, snake_pos=(DEFAULT_POSITION)):
         """Инициализация яблока."""
-        super().__init__(body_color)
-        self.body_color = body_color
-        self.randomize_position()
+        super().__init__(self.randomize_position(snake_pos),
+                         body_color=APPLE_COLOR)
 
-    def randomize_position(self, snake_pos=[DEFAULT_POSITION]):
+    def randomize_position(self, snake_pos):
         """Метод опредления рандомной позиции яблока"""
         while True:
-            self.position = (
+            # проверка есть ли свободное место для яблока
+            if len(snake_pos) == GRID_WIDTH * GRID_HEIGHT:
+                break
+            position = (
                 randint(0, GRID_WIDTH - 1) * GRID_SIZE,
                 randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             )
-            if self.position in snake_pos:
+            if position in snake_pos:
                 continue
-            else:
-                break
+            return position
 
     def draw(self, surface):
         """Метод отрисовки яблока на игровом поле."""
         self.draw_cell(surface, self.position, self.body_color)
-        
 
 
 def main():
     """Главная функция игры - точка входа"""
     snake = Snake()
-    apple = Apple()
+    apple = Apple(snake.positions)
 
     while True:
         clock.tick(SPEED)
@@ -199,7 +197,7 @@ def main():
             snake.reset()
         if apple.position == snake.get_head_position():
             snake.length += 1
-            apple.randomize_position(snake.positions)
+            apple.position = apple.randomize_position(snake.positions)
         pygame.display.update()
 
 
